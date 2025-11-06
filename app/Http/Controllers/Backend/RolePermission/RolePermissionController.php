@@ -25,4 +25,13 @@ class RolePermissionController extends Controller
         Role::create(['name' => $request->role_name]);
         return response()->json(['message' => 'Role created successfully']);
     }
+    // delete role
+    public function deleteRole($id)
+    {
+
+        $role = Role::find($id)->delete();
+        return response()->json([
+            'message' => 'Role deleted successfully'
+        ]);
+    }
 }

@@ -54,10 +54,12 @@
                                     <iconify-icon icon="lucide:edit" width="24" height="24"></iconify-icon> </a>
                                 &nbsp;
                                 <a href="#"
-                                    class="btn btn-outline-danger d-inline-flex align-items-center justify-content-center p-2 ">
+                                    class="btn btn-outline-danger d-inline-flex justify-content-center p-2 delete_role"
+                                    data-id="{{ $role->id }}">
                                     <iconify-icon icon="icon-park-outline:delete" width="24"
                                         height="24"></iconify-icon>
                                 </a>
+
                                 &nbsp;
                                 <a href="#"
                                     class="btn btn-outline-info d-inline-flex align-items-center justify-content-center p-2 ">
@@ -86,6 +88,7 @@
 
     <script>
         $(document).ready(function() {
+            //* CREATE ROLE
             $('#roleForm').submit(function(e) {
                 e.preventDefault();
 
@@ -117,6 +120,48 @@
                 });
 
             });
+
+            //* DELETE ROLE
+            $(document).on('click', '.delete_role', function(e) {
+                e.preventDefault();
+
+                let roleId = $(this).data('id');
+                let row = $(this).closest('tr');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/dashboard/role-permission/delete-role/${roleId}`, // matches your route
+                            type: 'DELETE',
+                            data: {
+                                _token: $('input[name="_token"]').val() // send CSRF token
+                            },
+                            success: function(response) {
+                                row.remove(); // remove the table row dynamically
+                                Swal.fire('Deleted!', response.message,
+                                    'success');
+                            },
+                            error: function(xhr) {
+                                Swal.fire('Error!', 'Something went wrong!',
+                                    'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+
+
+
+
         });
     </script>
 @endpush
