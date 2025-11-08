@@ -1,3 +1,4 @@
+@include('sweetalert2::index')
 <!DOCTYPE html>
 
 <html
