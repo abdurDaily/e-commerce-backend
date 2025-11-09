@@ -22,27 +22,27 @@ Route::middleware('auth')->group(function () {
 
 
 //* BACKEND ROUTES 
-Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified'])->group(function(){
+Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified'])->group(function () {
+
 
 
     //* MY PROFILE ROUTES 
-    Route::get('my-profile', [MyProfileController::class,'view'])->name('my.profile.view');
-    Route::post('my-profile-info', [MyProfileController::class,'updateInfo'])->name('my.profile.update.info');
-    Route::post('my-profile', [MyProfileController::class,'updatePassword'])->name('my.profile.update.password');
-    Route::post('my-profile-image', [MyProfileController::class,'updateProfileImage'])->name('my.profile.update.profile.image');
+    Route::get('my-profile', [MyProfileController::class, 'view'])->name('my.profile.view');
+    Route::post('my-profile-info', [MyProfileController::class, 'profileInfo'])->name('my.profile.info');
+    Route::post('my-profile-password', [MyProfileController::class, 'profilePassword'])->name('my.profile.password');
+    Route::post('my-profile-image', [MyProfileController::class, 'profileImage'])->name('my.profile.image');
 
 
     //* ROLE & PERMISSION ROUTES
-    Route::prefix('role-permission/')->name('role.permission.')->group(function(){
-        Route::get('create-role', [RolePermissionController::class,'createRole'])->name('create.role');
-        Route::post('create-role', [RolePermissionController::class,'storeRole'])->name('store.role');
-        Route::delete('delete-role/{id}', [RolePermissionController::class,'deleteRole'])->name('delete.role');
+    Route::prefix('role-permission/')->name('role.permission.')->group(function () {
+        Route::get('create-role', [RolePermissionController::class, 'createRole'])->name('create.role');
+        Route::post('create-role', [RolePermissionController::class, 'storeRole'])->name('store.role');
+        Route::delete('delete-role/{id}', [RolePermissionController::class, 'deleteRole'])->name('delete.role');
     });
-
 });
 
 
 
 //* FRONTEND ROUTES 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

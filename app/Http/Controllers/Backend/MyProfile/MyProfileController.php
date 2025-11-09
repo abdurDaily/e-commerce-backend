@@ -13,47 +13,60 @@ class MyProfileController extends Controller
     //* VIEW MY PROFILE 
     public function view()
     {
-        return view('backend.myProfile.profileView');
+        $user = Auth::user();
+        return view('backend.myProfile.profileView', compact('user'));
     }
 
-    //* UPDATE MY PROFILE INFO
-    public function updateInfo(Request $request)
+    //* MY PROFILE INFO STORE 
+    public function profileInfo(Request $request)
     {
-        dd($request->all());
-    }
-
-    //* UPDATE MY PROFILE PASSWORD
-    public function updatePassword(Request $request)
-    {
-        $user = Auth()->user();
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->with('error', 'Current Password is incorrect!');
-        }
-        if ($request->new_password !== $request->confirm_password) {
-            return back()->with('confirm_error', 'New Password and Confirm Password do not match!');
-        }
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-        Swal::success([
-            'title' => 'Password updated successfully!',
+        $request->validate([
+            'name' => 'required',
+            'designation' => 'required',
+            'email' => 'required',
+        ]);
+        $userInfo = Auth::user();
+        $userInfo->name = $request->name;
+        $userInfo->designation = $request->designation;
+        $userInfo->email = $request->email;
+        $userInfo->save();
+        Swal::toast([
+            'title' => 'User info updated successfully!',
         ]);
         return back();
     }
-    //* UPDATE MY PROFILE IMAGE
-    public function updateProfileImage(Request $request)
+
+    //* PASSWORD UPDATE 
+    public function profilePassword(Request $request)
     {
-        $profileImage = Auth::user();
+        $userPass = Auth::user();
+        if (!Hash::check($request->current_password, $userPass->password)) {
+            return back()->with('error', 'current pass does not match');
+        }
+        if ($request->new_password != $request->confirm_password) {
+            return back()->with('confirm_error', 'confirm pass not match!');
+        } else {
+            $userPass->password = Hash::make($request->new_password);
+            $userPass->save();
+            Swal::toast([
+                'title' => 'User password updated successfully!',
+            ]);
+            return back();
+        }
+    }
+
+    //* PROFILE IMAGE 
+    public function profileImage(Request $request)
+    {
+        $userImage = Auth::user();
         if ($request->hasFile('profile_image')) {
-
             $image = $request->file('profile_image');
-            $imageName = 'profile' . time() . '.' . $image->getClientOriginalName();
-
-            $image->storeAs('profile_images/', $imageName, 'public');
-            $profileImage->profile_image = $imageName;
-            $profileImage->save();
-
-            Swal::success([
-                'title' => 'Profile Image Uploded!',
+            $uniName = 'profile-' . time() . '-' . $request->profile_image->getClientOriginalName();
+            $image->storeAs('profileImages/', $uniName, 'public');
+            $userImage->profile_image = $uniName;
+            $userImage->save();
+            Swal::toast([
+                'title' => 'User Profile image updated successfully!',
             ]);
             return back();
         }
