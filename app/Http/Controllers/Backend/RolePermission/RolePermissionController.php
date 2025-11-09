@@ -28,10 +28,39 @@ class RolePermissionController extends Controller
     // delete role
     public function deleteRole($id)
     {
-
         $role = Role::find($id)->delete();
         return response()->json([
             'message' => 'Role deleted successfully'
+        ]);
+    }
+
+    //* EDIT ROLE 
+    // Get role data for editing
+    public function editRole($id)
+    {
+        $role = Role::findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'role' => [
+                'id' => $role->id,
+                'name' => $role->name
+            ]
+        ]);
+    }
+
+    // Update the role
+    public function updateRole(Request $request, $id)
+    {
+        $request->validate([
+            'role_name' => 'required|string|unique:roles,name,' . $id,
+        ]);
+
+        $role = Role::findOrFail($id);
+        $role->update(['name' => $request->role_name]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Role updated successfully'
         ]);
     }
 }

@@ -38,6 +38,8 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified']
         Route::get('create-role', [RolePermissionController::class, 'createRole'])->name('create.role');
         Route::post('create-role', [RolePermissionController::class, 'storeRole'])->name('store.role');
         Route::delete('delete-role/{id}', [RolePermissionController::class, 'deleteRole'])->name('delete.role');
+        Route::get('edit-role/{id}', [RolePermissionController::class, 'editRole'])->name('edit.role');
+        Route::put('update-role/{id}', [RolePermissionController::class, 'updateRole'])->name('update.role');
     });
 });
 
