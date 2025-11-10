@@ -158,15 +158,15 @@
 
             
             <!-- ROLE AND PERMISSION -->
-            <li class="menu-item {{ Route::is('dashboard.role.permission.create.role') ? 'active open' : '' }}">
+            <li class="menu-item {{ Route::is('dashboard.role.permission.create.user')|| Route::is('dashboard.role.permission.create.role') ? 'active open' : '' }}">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <iconify-icon icon="fluent-mdl2:permissions-solid" width="20" height="20"></iconify-icon>
                 <div data-i18n="Layouts"> &nbsp;&nbsp; Role & Permission</div>
               </a>
 
               <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="layouts-without-menu.html" class="menu-link">
+                <li class="menu-item {{ Route::is('dashboard.role.permission.create.user') ? 'active' : '' }}">
+                  <a href="{{ route('dashboard.role.permission.create.user') }}" class="menu-link">
                     <div data-i18n="Without menu">Create User</div>
                   </a>
                 </li>

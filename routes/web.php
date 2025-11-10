@@ -35,6 +35,10 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified']
 
     //* ROLE & PERMISSION ROUTES
     Route::prefix('role-permission/')->name('role.permission.')->group(function () {
+        //* USER CREATE 
+        Route::get('create-user', [RolePermissionController::class, 'createUser'])->name('create.user');
+        Route::post('create-user', [RolePermissionController::class, 'storeUser'])->name('store.user');
+
         Route::get('create-role', [RolePermissionController::class, 'createRole'])->name('create.role');
         Route::post('create-role', [RolePermissionController::class, 'storeRole'])->name('store.role');
         Route::delete('delete-role/{id}', [RolePermissionController::class, 'deleteRole'])->name('delete.role');
