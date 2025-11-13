@@ -41,7 +41,7 @@ class RolePermissionSeeder extends Seeder
         // Give all permissions to admin
         $adminRole = Role::where('name', 'admin')->first();
         $adminRole->syncPermissions(Permission::all());
-        
+
 
         // Assign admin role to the first user
         $user = User::first();

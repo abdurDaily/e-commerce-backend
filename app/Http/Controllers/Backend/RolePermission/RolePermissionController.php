@@ -8,6 +8,7 @@ use SweetAlert2\Laravel\Swal;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class RolePermissionController extends Controller
 {
@@ -22,7 +23,7 @@ class RolePermissionController extends Controller
     {
         $request->validate([
             'user_name' => 'required',
-            'user_email' => 'required|unique:table,column,except,id',
+            'user_email' => 'required|email|unique:users,email',
             'user_password' => 'required',
         ]);
 
@@ -43,18 +44,8 @@ class RolePermissionController extends Controller
         $userInfo->email = $request->user_email;
         $userInfo->password = Hash::make($request->user_password);
         $userInfo->save();
-        Swal::toast([
-            'title' => 'new user created successfully!',
-        ]);
-        return back();
-    }
 
-
-    //createRole
-    public function createRole()
-    {
-        $roles = Role::latest()->simplePaginate(5);
-        return view('backend.rolePermission.createRole', compact('roles'));
+        return back()->with('success', 'New user created successfully!');
     }
 
     // store role
@@ -67,6 +58,7 @@ class RolePermissionController extends Controller
         Role::create(['name' => $request->role_name]);
         return response()->json(['message' => 'Role created successfully']);
     }
+
     // delete role
     public function deleteRole($id)
     {
@@ -103,6 +95,93 @@ class RolePermissionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Role updated successfully'
+        ]);
+    }
+
+    //permission
+    public function permission()
+    {
+        $permissions = Permission::get();
+        $roles = Role::get();
+        return view('.rolePermission.permission', compact('permissions', 'roles'));
+    }
+
+    //create permission
+    public function createPermission(Request $request)
+    {
+        $request->validate([
+            'role' => 'required|exists:roles,id',
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:permissions,id',
+        ]);
+
+        $role = Role::findOrFail($request->role);
+        $permissions = Permission::whereIn('id', $request->permissions)->get();
+
+        $role->syncPermissions($permissions);
+
+        return back()->with('success', 'Permissions assigned to role successfully!');
+    }
+
+    public function createRole()
+    {
+        $roles = Role::paginate(10);
+        $permissions = Permission::all();
+        return view('backend.rolePermission.createRole', compact('roles', 'permissions'));
+    }
+
+    //* ASSIGN PERMISSION GET 
+    public function assignPermission($roleId = null)
+    {
+        $permissions = Permission::all();
+        $roles = Role::all();
+
+        // If roleId is provided, get the role and its permissions
+        $selectedRole = null;
+        $rolePermissions = [];
+
+        if ($roleId) {
+            $selectedRole = Role::findOrFail($roleId);
+            $rolePermissions = $selectedRole->permissions->pluck('id')->toArray();
+        }
+
+        return view('backend.rolePermission.assignPermission', compact('permissions', 'roles', 'selectedRole', 'rolePermissions'));
+    }
+
+    //* STORE PERMISSION
+    public function storePermission(Request $request)
+    {
+        $request->validate([
+            'role_id' => 'required|exists:roles,id',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
+        ]);
+
+        $role = Role::findOrFail($request->role_id);
+
+        // If no permissions selected, remove all permissions
+        if (empty($request->permissions)) {
+            $role->syncPermissions([]);
+        } else {
+            $permissions = Permission::whereIn('id', $request->permissions)->get();
+            $role->syncPermissions($permissions);
+        }
+
+        return redirect()
+            ->route('dashboard.role.permission.assign.permission', $request->role_id)
+            ->with('success', 'Permissions assigned successfully!');
+    }
+
+    //* GET ROLE PERMISSIONS (for viewing)
+    public function getRolePermissions($id)
+    {
+        $role = Role::findOrFail($id);
+        $permissions = $role->permissions;
+
+        return response()->json([
+            'success' => true,
+            'role' => $role->name,
+            'permissions' => $permissions
         ]);
     }
 }

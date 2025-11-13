@@ -30,6 +30,9 @@
                             <div class="col-lg-6">
                                 <label class="mb-1" for="email">user email:</label>
                                 <input name="user_email" type="email" class="form-control p-3" placeholder="email">
+                                @error('user_email')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="col-lg-6 mt-3">
                                 <label class="mb-1" for="password">user name:</label>

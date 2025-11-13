@@ -19,12 +19,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
-
 //* BACKEND ROUTES 
 Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified'])->group(function () {
-
-
 
     //* MY PROFILE ROUTES 
     Route::get('my-profile', [MyProfileController::class, 'view'])->name('my.profile.view');
@@ -32,22 +28,31 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified']
     Route::post('my-profile-password', [MyProfileController::class, 'profilePassword'])->name('my.profile.password');
     Route::post('my-profile-image', [MyProfileController::class, 'profileImage'])->name('my.profile.image');
 
-
     //* ROLE & PERMISSION ROUTES
     Route::prefix('role-permission/')->name('role.permission.')->group(function () {
         //* USER CREATE 
         Route::get('create-user', [RolePermissionController::class, 'createUser'])->name('create.user');
         Route::post('create-user', [RolePermissionController::class, 'storeUser'])->name('store.user');
 
+        //* ROLE MANAGEMENT
         Route::get('create-role', [RolePermissionController::class, 'createRole'])->name('create.role');
         Route::post('create-role', [RolePermissionController::class, 'storeRole'])->name('store.role');
         Route::delete('delete-role/{id}', [RolePermissionController::class, 'deleteRole'])->name('delete.role');
         Route::get('edit-role/{id}', [RolePermissionController::class, 'editRole'])->name('edit.role');
         Route::put('update-role/{id}', [RolePermissionController::class, 'updateRole'])->name('update.role');
+        
+        //* PERMISSION MANAGEMENT
+        Route::get('permission', [RolePermissionController::class, 'permission'])->name('permission');
+        Route::post('permission', [RolePermissionController::class, 'createPermission'])->name('create.permission');
+
+        //* ASSIGN PERMISSION TO ROLE
+        Route::get('assign-permission/{roleId?}', [RolePermissionController::class, 'assignPermission'])->name('assign.permission');
+        Route::post('assign-permission', [RolePermissionController::class, 'storePermission'])->name('store.permission');
+        
+        //* VIEW ROLE PERMISSIONS
+        Route::get('get-role-permissions/{id}', [RolePermissionController::class, 'getRolePermissions'])->name('get.role.permissions');
     });
 });
-
-
 
 //* FRONTEND ROUTES 
 
