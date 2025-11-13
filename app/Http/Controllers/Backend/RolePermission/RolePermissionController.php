@@ -131,21 +131,14 @@ class RolePermissionController extends Controller
     }
 
     //* ASSIGN PERMISSION GET 
-    public function assignPermission($roleId = null)
+    public function assignPermission($roleId)
     {
         $permissions = Permission::all();
-        $roles = Role::all();
+        $selectedRole = Role::findOrFail($roleId);
+        $rolePermissions = $selectedRole->permissions->pluck('id')->toArray();
+      
 
-        // If roleId is provided, get the role and its permissions
-        $selectedRole = null;
-        $rolePermissions = [];
-
-        if ($roleId) {
-            $selectedRole = Role::findOrFail($roleId);
-            $rolePermissions = $selectedRole->permissions->pluck('id')->toArray();
-        }
-
-        return view('backend.rolePermission.assignPermission', compact('permissions', 'roles', 'selectedRole', 'rolePermissions'));
+        return view('backend.rolePermission.assignPermission', compact('permissions', 'selectedRole', 'rolePermissions'));
     }
 
     //* STORE PERMISSION

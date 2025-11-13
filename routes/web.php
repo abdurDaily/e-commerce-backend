@@ -29,7 +29,7 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified']
     Route::post('my-profile-image', [MyProfileController::class, 'profileImage'])->name('my.profile.image');
 
     //* ROLE & PERMISSION ROUTES
-    Route::prefix('role-permission/')->name('role.permission.')->group(function () {
+    Route::prefix('role-permission/')->middleware(['permission:view|user|super admin'])->name('role.permission.')->group(function () {
         //* USER CREATE 
         Route::get('create-user', [RolePermissionController::class, 'createUser'])->name('create.user');
         Route::post('create-user', [RolePermissionController::class, 'storeUser'])->name('store.user');
@@ -40,7 +40,7 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified']
         Route::delete('delete-role/{id}', [RolePermissionController::class, 'deleteRole'])->name('delete.role');
         Route::get('edit-role/{id}', [RolePermissionController::class, 'editRole'])->name('edit.role');
         Route::put('update-role/{id}', [RolePermissionController::class, 'updateRole'])->name('update.role');
-        
+
         //* PERMISSION MANAGEMENT
         Route::get('permission', [RolePermissionController::class, 'permission'])->name('permission');
         Route::post('permission', [RolePermissionController::class, 'createPermission'])->name('create.permission');
@@ -48,7 +48,7 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified']
         //* ASSIGN PERMISSION TO ROLE
         Route::get('assign-permission/{roleId?}', [RolePermissionController::class, 'assignPermission'])->name('assign.permission');
         Route::post('assign-permission', [RolePermissionController::class, 'storePermission'])->name('store.permission');
-        
+
         //* VIEW ROLE PERMISSIONS
         Route::get('get-role-permissions/{id}', [RolePermissionController::class, 'getRolePermissions'])->name('get.role.permissions');
     });
