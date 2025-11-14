@@ -62,7 +62,7 @@ class MyProfileController extends Controller
         if ($request->hasFile('profile_image')) {
             $image = $request->file('profile_image');
             $uniName = 'profile-' . time() . '-' . $request->profile_image->getClientOriginalName();
-            $image->storeAs('profileImages/', $uniName, 'public');
+            $image->storeAs('profile_images/', $uniName, 'public');
             $userImage->profile_image = $uniName;
             $userImage->save();
             Swal::toast([

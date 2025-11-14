@@ -18,6 +18,37 @@ class RolePermissionController extends Controller
         return view('backend.rolePermission.createUser');
     }
 
+    // LIST USER'S
+    public function listUser()
+    {
+        $users = User::latest()->get();
+        return view('backend.rolePermission.listUser', compact('users'));
+    }
+
+    // assignRole
+    public function assignRole($id)
+    {
+        $user = User::findOrFail($id);
+        $roles = Role::get();
+        return view('backend.rolePermission.assignRole', compact('roles', 'user'));
+    }
+
+
+    // assignRoleStore
+    public function assignRoleStore(Request $request)
+    {
+        $user = User::findOrFail($request->user_id);
+        $user->syncRoles($request->role);
+        return back()->with('success', 'Roles assigned successfully!');
+    }
+
+    // EDIT USER 
+    public function editUser($id)
+    {
+        $editUser = User::find($id);
+        return view('backend.rolePermission.editUser', compact('editUser'));
+    }
+
     // STORE USER 
     public function storeUser(Request $request)
     {
@@ -136,7 +167,7 @@ class RolePermissionController extends Controller
         $permissions = Permission::all();
         $selectedRole = Role::findOrFail($roleId);
         $rolePermissions = $selectedRole->permissions->pluck('id')->toArray();
-      
+
 
         return view('backend.rolePermission.assignPermission', compact('permissions', 'selectedRole', 'rolePermissions'));
     }

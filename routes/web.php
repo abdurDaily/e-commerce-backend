@@ -32,7 +32,14 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified']
     Route::prefix('role-permission/')->middleware(['permission:view|user|super admin'])->name('role.permission.')->group(function () {
         //* USER CREATE 
         Route::get('create-user', [RolePermissionController::class, 'createUser'])->name('create.user');
+        Route::get('list-user', [RolePermissionController::class, 'listUser'])->name('list.user');
+        Route::get('edit-user/{id}', [RolePermissionController::class, 'editUser'])->name('edit.user');
         Route::post('create-user', [RolePermissionController::class, 'storeUser'])->name('store.user');
+        Route::get('assign-role/{id}', [RolePermissionController::class, 'assignRole'])
+            ->name('assign.role.user');
+
+        Route::post('assign-role', [RolePermissionController::class, 'assignRoleStore'])
+            ->name('assign.role.user.store');
 
         //* ROLE MANAGEMENT
         Route::get('create-role', [RolePermissionController::class, 'createRole'])->name('create.role');

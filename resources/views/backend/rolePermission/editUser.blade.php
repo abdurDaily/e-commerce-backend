@@ -2,20 +2,23 @@
 @section('backend_content')
     <div class="card p-3">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Create an user</h5>
+            <h5 class="mb-0">Update User Info</h5>
             <a href="{{ route('dashboard.role.permission.list.user') }}" class="btn btn-primary  ">see all users</a>
         </div>
 
         <div class="card-body">
-            <form action="{{ route('dashboard.role.permission.store.user') }}" method="post" enctype="multipart/form-data">
+            <form action="" method="post" enctype="multipart/form-data">
                 @csrf
+                @method('put')
 
                 <div class="row justify-content-between">
                     <div class="col-lg-4 text-center">
                         <label for="imgInp">
                             <img class="previewImg"
                                 style="border: 1px solid #0000001a; cursor: pointer; padding:10px; width:100%; max-wdth:250px; height:250px; object-fit:cover;"
-                                id="blah" class="img-fluid" src="{{ asset('assets/img/upload.jpg') }}" alt="">
+                                id="blah" class="img-fluid"
+                                src="{{ $editUser->profile_image ? asset('storage/profile_images/' . $editUser->profile_image) : asset('assets/img/upload.jpg') }}"
+                                alt="">
                         </label>
                         <input name="profile_image" hidden accept="image/*" type='file' id="imgInp" />
 
@@ -25,11 +28,13 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <label class="mb-1" for="name">user name:</label>
-                                <input name="user_name" type="text" class="form-control p-3" placeholder="name">
+                                <input value="{{ $editUser->name }}" name="user_name" type="text"
+                                    class="form-control p-3" placeholder="name">
                             </div>
                             <div class="col-lg-6">
                                 <label class="mb-1" for="email">user email:</label>
-                                <input name="user_email" type="email" class="form-control p-3" placeholder="email">
+                                <input value="{{ $editUser->email }}" name="user_email" type="email"
+                                    class="form-control p-3" placeholder="email">
                                 @error('user_email')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -43,12 +48,12 @@
                                 <input type="password" class="form-control p-3" placeholder="password"
                                     name="confirm_password">
 
-                                @if(session('pass_err'))
-                                  <p class="text-danger">{{ session('pass_err') }}</p>
+                                @if (session('pass_err'))
+                                    <p class="text-danger">{{ session('pass_err') }}</p>
                                 @endif
                             </div>
                             <div class="col mt-3">
-                                <button class="btn btn-primary p-3 w-100 ">Register user</button>
+                                <button class="btn btn-primary p-3 w-100 ">Update user info</button>
                             </div>
 
                         </div>
