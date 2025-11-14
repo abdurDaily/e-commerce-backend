@@ -37,7 +37,6 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['auth', 'verified']
         Route::post('create-user', [RolePermissionController::class, 'storeUser'])->name('store.user');
         Route::get('assign-role/{id}', [RolePermissionController::class, 'assignRole'])
             ->name('assign.role.user');
-
         Route::post('assign-role', [RolePermissionController::class, 'assignRoleStore'])
             ->name('assign.role.user.store');
 

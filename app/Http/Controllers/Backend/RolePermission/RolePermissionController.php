@@ -39,6 +39,9 @@ class RolePermissionController extends Controller
     {
         $user = User::findOrFail($request->user_id);
         $user->syncRoles($request->role);
+        Swal::toast([
+            'title' => 'Roles assigned successfully!',
+        ]);
         return back()->with('success', 'Roles assigned successfully!');
     }
 
@@ -167,8 +170,6 @@ class RolePermissionController extends Controller
         $permissions = Permission::all();
         $selectedRole = Role::findOrFail($roleId);
         $rolePermissions = $selectedRole->permissions->pluck('id')->toArray();
-
-
         return view('backend.rolePermission.assignPermission', compact('permissions', 'selectedRole', 'rolePermissions'));
     }
 
